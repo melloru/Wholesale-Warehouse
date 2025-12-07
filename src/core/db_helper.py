@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from src.core.config import config
+from core.config import config
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncEngine
