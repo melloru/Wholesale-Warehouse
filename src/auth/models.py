@@ -1,11 +1,19 @@
 from datetime import datetime
 
-from sqlalchemy import Text, JSON, DateTime, Enum, UniqueConstraint, Index
+from sqlalchemy import (
+    JSON,
+    DateTime,
+    Enum,
+    UniqueConstraint,
+    Index,
+    String,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.mutable import MutableDict
 
 from core.models import Base
 from core.mixins import TimestampMixin
+from core.constants import FieldLengths
 from auth.enums import UserRole, UserStatus
 
 
@@ -14,14 +22,29 @@ class User(Base, TimestampMixin):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    email: Mapped[str] = mapped_column(Text, nullable=False)
-    password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    email: Mapped[str] = mapped_column(String(FieldLengths.EMAIL), nullable=False)
+    password_hash: Mapped[str] = mapped_column(
+        String(FieldLengths.PASSWORD_HASH),
+        nullable=False,
+    )
 
-    first_name: Mapped[str | None] = mapped_column(Text, nullable=True)
-    last_name: Mapped[str | None] = mapped_column(Text, nullable=True)
-    public_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    first_name: Mapped[str | None] = mapped_column(
+        String(FieldLengths.NAME),
+        nullable=True,
+    )
+    last_name: Mapped[str | None] = mapped_column(
+        String(FieldLengths.NAME),
+        nullable=True,
+    )
+    public_name: Mapped[str | None] = mapped_column(
+        String(FieldLengths.PUBLIC_NAME),
+        nullable=True,
+    )
 
-    phone_number: Mapped[int | None] = mapped_column(Text, nullable=True)
+    phone_number: Mapped[int | None] = mapped_column(
+        String(FieldLengths.PHONE),
+        nullable=True,
+    )
     phone_verified: Mapped[bool] = mapped_column(default=False)
     email_verified: Mapped[bool] = mapped_column(default=False)
 
@@ -32,13 +55,13 @@ class User(Base, TimestampMixin):
     )
 
     role: Mapped[UserRole] = mapped_column(
-        Enum(UserRole),
+        Enum(UserRole, name="user_role"),
         default=UserRole.CUSTOMER,
         nullable=False,
     )
 
     status: Mapped[UserStatus] = mapped_column(
-        Enum(UserStatus),
+        Enum(UserStatus, name="user_status"),
         default=UserStatus.PENDING,
         nullable=False,
     )
@@ -59,6 +82,7 @@ class User(Base, TimestampMixin):
 
     __table_args__ = (
         UniqueConstraint("email", name="ux_users_email"),
+        Index("ix_users_email", "email"),
         Index("ix_users_status", "status"),
         Index("ix_users_role_status", "role", "status"),
     )
