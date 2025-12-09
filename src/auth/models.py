@@ -1,5 +1,3 @@
-import enum
-
 from datetime import datetime
 
 from sqlalchemy import Text, JSON, DateTime, Enum, UniqueConstraint, Index
@@ -8,20 +6,7 @@ from sqlalchemy.ext.mutable import MutableDict
 
 from core.models import Base
 from core.mixins import TimestampMixin
-
-
-class UserRole(enum.Enum):
-    CUSTOMER = "customer"
-    SELLER = "seller"
-    MEDIATOR = "mediator"
-
-
-class UserStatus(enum.Enum):
-    ACTIVE = "active"
-    INACTIVE = "inactive"
-    SUSPENDED = "suspended"
-    PENDING = "pending"
-    BANNED = "banned"
+from auth.enums import UserRole, UserStatus
 
 
 class User(Base, TimestampMixin):
