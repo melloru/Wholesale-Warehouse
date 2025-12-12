@@ -58,7 +58,7 @@ class BaseUser(BaseModel):
     phone_number: PhoneStr | None
 
 
-class UserSchema(BaseUser):
+class UserResponse(BaseUser):
     id: int
     email_verified: bool
     phone_verified: bool
@@ -71,19 +71,24 @@ class UserSchema(BaseUser):
     last_login_at: datetime | None = None
 
 
-class UserDetailSchema(UserSchema):
+class UserDetailResponse(UserResponse):
     permissions: dict[str, Any]
     is_deleted: bool
     deleted_at: datetime | None
 
 
-class CreateUserSchema(BaseUser):
-    password_hash: PasswordStr
+class UserCreateRequest(BaseUser):
+    password: PasswordStr
     role: UserRole = Field(
         default=UserRole.CUSTOMER,
     )
 
 
-class LoginSchema(BaseModel):
-    email: EmailStr
-    password: str
+class UserCreateDB(BaseUser):
+    password_hash: str
+    role: UserRole = Field(default=UserRole.CUSTOMER)
+    status: UserStatus = Field(default=UserStatus.ACTIVE)
+    email_verified: bool = Field(default=False)
+    phone_verified: bool = Field(default=False)
+    is_staff: bool = Field(default=False)
+    is_superadmin: bool = Field(default=False)

@@ -16,8 +16,19 @@ class BaseService(Generic[T, R, CreateSchema]):
     def __init__(self, repository: R):
         self.repository = repository
 
-    async def get_by_id(self, session: AsyncSession, id: int) -> T | None:
-        return await self.repository.get_by(session, id=id)
+    async def get_by_id(
+        self,
+        session: AsyncSession,
+        id: int,
+    ) -> T | None:
+        return await self.get_one_or_none(session, id=id)
+
+    async def get_one_or_none(
+        self,
+        session: AsyncSession,
+        **filters,
+    ) -> T | None:
+        return await self.repository.get_one_or_none(session, **filters)
 
     async def get_many(
         self,

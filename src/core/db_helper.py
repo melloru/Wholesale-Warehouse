@@ -1,10 +1,9 @@
-from typing import TYPE_CHECKING
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from typing import AsyncGenerator
+
+from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 from core.config import config
-
-if TYPE_CHECKING:
-    from sqlalchemy.ext.asyncio import AsyncEngine
 
 
 class DatabaseHelper:
@@ -17,7 +16,7 @@ class DatabaseHelper:
             expire_on_commit=False,
         )
 
-    async def session_getter(self):
+    async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
         async with self.session_factory() as session:
             try:
                 yield session

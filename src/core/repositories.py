@@ -8,16 +8,16 @@ from core.models import Base
 
 
 T = TypeVar("T", bound=Base)
-CreateSchema = TypeVar("CreateSchema", bound=BaseModel)
+TCreate = TypeVar("TCreate", bound=BaseModel)
 
 
-class SqlalchemyRepository(Generic[T]):
+class SqlalchemyRepository(Generic[T, TCreate]):
     def __init__(self, model: Type[T]):
         if not issubclass(model, Base):
             raise TypeError(f"Model {model} must inherit from Base")
         self.model = model
 
-    async def get_by(
+    async def get_one_or_none(
         self,
         session: AsyncSession,
         **filters,
@@ -26,6 +26,16 @@ class SqlalchemyRepository(Generic[T]):
         result = await session.execute(stmt)
 
         return result.scalar_one_or_none()
+
+    async def get_first(
+        self,
+        session: AsyncSession,
+        **filters,
+    ) -> T | None:
+        stmt = select(self.model).filter_by(**filters)
+        result = await session.execute(stmt)
+
+        return result.scalars().first()
 
     async def get_many(
         self,
@@ -49,7 +59,7 @@ class SqlalchemyRepository(Generic[T]):
     async def create(
         self,
         session: AsyncSession,
-        obj_in: CreateSchema,
+        obj_in: TCreate,
     ) -> T:
         data = obj_in.model_dump(exclude_unset=True)
 
