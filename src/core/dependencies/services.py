@@ -1,9 +1,7 @@
 from typing import Annotated
 
 from fastapi.params import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.db_helper import db_helper
 from core.factories.service_factory import service_factory
 from auth.services.user_service import UserService
 from auth.services.auth_service import AuthService
@@ -22,7 +20,6 @@ def get_auth_service() -> AuthService:
     return service_factory.get_auth_service()
 
 
-DbSessionDep = Annotated[AsyncSession, Depends(db_helper.get_session)]
 UserServiceDep = Annotated[UserService, Depends(get_user_service)]
 SessionServiceDep = Annotated[SessionService, Depends(get_session_service)]
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]

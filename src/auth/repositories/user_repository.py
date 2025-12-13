@@ -1,4 +1,4 @@
-from core.repositories import SqlalchemyRepository
+from core.database.repositories import SqlalchemyRepository
 from auth.models.users import User
 from auth.schemas.user_schemas import UserCreateDB
 

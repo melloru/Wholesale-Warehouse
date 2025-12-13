@@ -4,7 +4,7 @@ from auth.schemas.user_schemas import UserCreateRequest, UserResponse
 from auth.schemas.auth_schemas import LoginSchema
 from auth.schemas.token_schemas import AccessTokenResponse
 from core.dependencies import (
-    DbSessionDep,
+    DbSession,
     UserServiceDep,
     AuthServiceDep,
 )
@@ -18,7 +18,7 @@ router = APIRouter(
 
 @router.get("/{id}", response_model=UserResponse)
 async def get_user_by_id(
-    session: DbSessionDep,
+    session: DbSession,
     service: UserServiceDep,
     user_id: int,
 ):
@@ -27,7 +27,7 @@ async def get_user_by_id(
 
 @router.post("/create", response_model=UserResponse)
 async def create_user(
-    session: DbSessionDep,
+    session: DbSession,
     service: UserServiceDep,
     new_user_data: UserCreateRequest,
 ):
@@ -36,8 +36,16 @@ async def create_user(
 
 @router.post("/login", response_model=AccessTokenResponse)
 async def login(
-    session: DbSessionDep,
+    session: DbSession,
     service: AuthServiceDep,
     login_data: LoginSchema,
 ):
     return await service.login(session, login_data=login_data)
+
+
+@router.post("/refresh", response_model=AccessTokenResponse)
+async def refresh(
+    session: DbSession,
+    service: AuthServiceDep,
+):
+    pass

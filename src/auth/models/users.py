@@ -11,8 +11,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.mutable import MutableDict
 
-from core.models import Base
-from core.mixins import TimestampMixin
+from core.database.models import Base
+from core.database.mixins import TimestampMixin
 from core.constants import UserFieldLengths
 from auth.enums import UserRole, UserStatus
 

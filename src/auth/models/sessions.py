@@ -11,12 +11,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.models import Base
-from core.mixins import TimestampMixin
+from core.database.models import Base
+from core.database.mixins import TimestampMixin
 from core.constants import SessionFieldLengths
 
 
-class Session(Base, TimestampMixin):
+class UserSession(Base, TimestampMixin):
     __tablename__ = "sessions"
 
     id: Mapped[uuid.UUID] = mapped_column(

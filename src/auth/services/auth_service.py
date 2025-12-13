@@ -63,3 +63,11 @@ class AuthService:
             expires_at=int(expires_at.timestamp()),
         )
         return access_token_data
+
+    async def refresh(
+        self, session: AsyncSession, session_id: str
+    ) -> AccessTokenResponse:
+        pass
+
+    async def _verify_access_token(self, access_token: str):
+        pass

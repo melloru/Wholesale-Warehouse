@@ -1,10 +1,10 @@
-from typing import TypeVar, Generic, Sequence
+from typing import TypeVar, Generic, Sequence, Any
 
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import Base
-from core.repositories import SqlalchemyRepository
+from core.database.models import Base
+from core.database.repositories import SqlalchemyRepository
 
 
 T = TypeVar("T", bound=Base)
@@ -19,9 +19,9 @@ class BaseService(Generic[T, R, CreateSchema]):
     async def get_by_id(
         self,
         session: AsyncSession,
-        id: int,
+        id: Any,
     ) -> T | None:
-        return await self.get_one_or_none(session, id=id)
+        return await self.repository.get_by_id(session, obj_id=id)
 
     async def get_one_or_none(
         self,
@@ -50,3 +50,15 @@ class BaseService(Generic[T, R, CreateSchema]):
         obj_in: CreateSchema,
     ) -> T:
         return await self.repository.create(session, obj_in=obj_in)
+
+    async def update_one(
+        self,
+        session: AsyncSession,
+        obj_id: Any,
+        **update_data,
+    ):
+        return await self.repository.update_one(
+            session,
+            obj_id=obj_id,
+            update_data=update_data,
+        )

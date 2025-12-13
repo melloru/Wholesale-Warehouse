@@ -1,7 +1,7 @@
 from typing import Any
 
 from auth.models.users import User
-from auth.models.sessions import Session
+from auth.models.sessions import UserSession
 from auth.repositories.user_repository import UserRepository
 from auth.repositories.session_repository import SessionRepository
 
@@ -17,7 +17,7 @@ class RepositoryFactory:
 
     def get_session_repository(self):
         if "session_repository" not in self._cache:
-            self._cache["session_repository"] = SessionRepository(Session)
+            self._cache["session_repository"] = SessionRepository(UserSession)
         return self._cache["session_repository"]
 
     def clear(self):

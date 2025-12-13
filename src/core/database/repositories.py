@@ -1,10 +1,10 @@
-from typing import TypeVar, Generic, Type, Sequence
+from typing import TypeVar, Generic, Type, Sequence, Any
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
-from core.models import Base
+from core.database.models import Base
 
 
 T = TypeVar("T", bound=Base)
@@ -16,6 +16,16 @@ class SqlalchemyRepository(Generic[T, TCreate]):
         if not issubclass(model, Base):
             raise TypeError(f"Model {model} must inherit from Base")
         self.model = model
+
+    async def get_by_id(
+        self,
+        session: AsyncSession,
+        obj_id: Any,
+    ) -> T | None:
+        stmt = select(self.model).filter_by(id=obj_id)
+        result = await session.execute(stmt)
+
+        return result.scalar_one_or_none()
 
     async def get_one_or_none(
         self,
@@ -69,3 +79,16 @@ class SqlalchemyRepository(Generic[T, TCreate]):
         await session.refresh(instance)
 
         return instance
+
+    async def update_one(
+        self,
+        session: AsyncSession,
+        obj_id: Any,
+        **update_data,
+    ) -> T | None:
+        stmt = update(self.model).where(self.model.id == obj_id).values(**update_data)
+
+        await session.execute(stmt)
+        await session.flush()
+
+        return await self.get_by_id(session, obj_id=obj_id)
