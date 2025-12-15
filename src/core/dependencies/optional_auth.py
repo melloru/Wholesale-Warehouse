@@ -1,42 +1,51 @@
+from uuid import UUID
 from typing import Annotated
 
+from fastapi import HTTPException, status
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.exceptions.token import TokenDecodeError
 from auth.models.users import User
 from auth.models.sessions import UserSession
-from auth.schemas.token_schemas import TokenPayloadInternal
+from auth.schemas.token_schemas import TokenPayload
 from core.dependencies.helpers import TokenHelperDep
 from core.dependencies.database import DbSession
 from core.dependencies.services import SessionServiceDep, UserServiceDep
 
 
 async def get_maybe_token_payload(
-    token: Annotated[str, Depends(HTTPBearer(auto_error=False))],
+    token: Annotated[str | None, Depends(HTTPBearer(auto_error=False))],
     helper: TokenHelperDep,
-) -> TokenPayloadInternal | None:
+) -> TokenPayload | None:
     if not token:
         return None
     try:
-        return helper.decode_token(token)
+        try:
+            return helper.decode_token(token, verify_exp=False)
+        except TokenDecodeError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid token type",
+            )
     except Exception:
         return None
 
 
 async def get_maybe_session(
     session: DbSession,
-    payload: Annotated[TokenPayloadInternal | None, Depends(get_maybe_token_payload)],
+    payload: Annotated[TokenPayload | None, Depends(get_maybe_token_payload)],
     service: SessionServiceDep,
 ) -> UserSession | None:
     if not payload:
         return None
 
-    session_id = payload.get("session_id")
-    if not session_id:
-        return None
-
-    return await service.get_session_if_valid(session, id=session_id)
+    return await service.get_session_if_valid(
+        session,
+        id=UUID(payload.session_id),
+        jti=UUID(payload.jti),
+    )
 
 
 async def get_maybe_user(
@@ -51,7 +60,7 @@ async def get_maybe_user(
 
 
 MaybeTokenPayload = Annotated[
-    TokenPayloadInternal | None,
+    TokenPayload | None,
     Depends(get_maybe_token_payload),
 ]
 MaybeSession = Annotated[

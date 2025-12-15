@@ -56,9 +56,9 @@ class BaseService(Generic[T, R, CreateSchema]):
         session: AsyncSession,
         obj_id: Any,
         **update_data,
-    ):
+    ) -> T | None:
         return await self.repository.update_one(
             session,
             obj_id=obj_id,
-            update_data=update_data,
+            **update_data,
         )

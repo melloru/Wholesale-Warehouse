@@ -34,6 +34,10 @@ class UserSession(Base, TimestampMixin):
         String(512),
         nullable=False,
     )
+    current_jti: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        nullable=False,
+    )
     expires_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
@@ -56,4 +60,5 @@ class UserSession(Base, TimestampMixin):
         Index("ix_sessions_expires_at_revoked", "expires_at", "revoked"),
         Index("ix_sessions_user_id_expires_at", "user_id", "expires_at"),
         Index("ix_sessions_created_at", "created_at"),
+        Index("ix_sessions_current_jti", "current_jti"),
     )

@@ -22,7 +22,10 @@ class User(Base, TimestampMixin):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    email: Mapped[str] = mapped_column(String(UserFieldLengths.EMAIL), nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(UserFieldLengths.EMAIL),
+        nullable=False,
+    )
     password_hash: Mapped[str] = mapped_column(
         String(UserFieldLengths.PASSWORD_HASH),
         nullable=False,

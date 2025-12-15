@@ -1,2 +1,0 @@
-class InvalidEmailOrPasswordError(Exception):
-    pass

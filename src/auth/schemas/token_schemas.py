@@ -8,17 +8,26 @@ class AccessTokenResponse(BaseModel):
     expires_at: int
 
 
-class TokenPayloadForJWT(BaseModel):
-    """DTO для сериализации в токен"""
+class TokenData(BaseModel):
+    """Данные для создания токена (входные параметры)"""
 
     session_id: str
+    jti: str
+
+
+class TokenPayload(BaseModel):
+    """Финальный payload для JWT (то, что попадет в токен)"""
+
+    session_id: str
+    jti: str
     exp: int
     type: str
 
 
-class TokenPayloadInternal(BaseModel):
-    """DTO для использования в Python-коде"""
+class TypedTokenPayload(BaseModel):
+    """Типизированный токен для использования в коде"""
 
     session_id: UUID
+    jti: UUID
     exp: int
     type: str
