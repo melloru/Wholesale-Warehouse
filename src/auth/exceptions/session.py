@@ -1,4 +1,4 @@
-from core.exceptions.auth import AuthenticationError
+from auth.exceptions.auth import AuthenticationError
 
 
 class SessionError(AuthenticationError):

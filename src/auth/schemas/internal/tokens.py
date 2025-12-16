@@ -3,11 +3,6 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class AccessTokenResponse(BaseModel):
-    access_token: str
-    expires_at: int
-
-
 class TokenData(BaseModel):
     """Данные для создания токена (входные параметры)"""
 

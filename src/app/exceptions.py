@@ -1,4 +1,6 @@
 class AppError(Exception):
+    """Базовое исключение приложения"""
+
     def __init__(
         self,
         message: str,

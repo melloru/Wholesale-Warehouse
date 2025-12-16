@@ -1,8 +1,4 @@
-from core.exceptions.auth import AuthenticationError
-
-
-class TokenDecodeError(Exception):
-    pass
+from auth.exceptions.auth import AuthenticationError
 
 
 class TokenError(AuthenticationError):

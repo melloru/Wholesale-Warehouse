@@ -1,6 +1,6 @@
 from core.database.repositories import SqlalchemyRepository
-from auth.models.users import User
-from auth.schemas.user_schemas import UserCreateDB
+from auth.models import User
+from auth.schemas import UserCreateDB
 
 
 class UserRepository(SqlalchemyRepository[User, UserCreateDB]):

@@ -2,21 +2,12 @@ import jwt
 
 from datetime import datetime, timedelta, timezone
 
-from core.exceptions.token import TokenDecodeError, TokenInvalidError
+from auth.exceptions.token import TokenInvalidError, TokenExpiredError
 from core.config import config
-from auth.schemas.token_schemas import (
-    TokenPayload,
-    TokenData,
-)
+from auth.schemas import TokenPayload, TokenData
 
 
 class TokenHelper:
-    # def __init__(self, required_fields: list = None):
-    #     if required_fields is None:
-    #         self.required_fields = []
-    #     else:
-    #         self.required_fields =
-
     @classmethod
     def _create_token(cls, payload: TokenPayload) -> tuple[str, datetime]:
         payload = payload.model_dump()
@@ -26,22 +17,22 @@ class TokenHelper:
             algorithm="HS256",
         )
         exp_timestamp = payload.get("exp")
-        expires_at = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
-        return token, expires_at
+        exp = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
+        return token, exp
 
     @classmethod
-    def create_access_token(cls, token_payload: TokenData) -> tuple[str, datetime]:
+    def create_access_token(cls, token_data: TokenData) -> tuple[str, datetime]:
         payload = cls._build_payload(
-            **token_payload.model_dump(),
+            **token_data.model_dump(),
             expires_in_minutes=config.security.ACCESS_TOKEN_EXPIRES_MINUTES,
             token_type="access",
         )
         return cls._create_token(payload)
 
     @classmethod
-    def create_refresh_token(cls, token_payload: TokenData) -> tuple[str, datetime]:
+    def create_refresh_token(cls, token_data: TokenData) -> tuple[str, datetime]:
         payload = cls._build_payload(
-            **token_payload.model_dump(),
+            **token_data.model_dump(),
             expires_in_minutes=config.security.REFRESH_TOKEN_EXPIRES_MINUTES,
             token_type="refresh",
         )
@@ -74,9 +65,6 @@ class TokenHelper:
             )
         except jwt.exceptions.DecodeError:
             raise TokenInvalidError("Token decode error")
-        return TokenPayload(
-            session_id=payload.get("session_id"),
-            jti=payload.get("jti"),
-            exp=payload.get("exp"),
-            type=payload.get("type"),
-        )
+        except jwt.exceptions.ExpiredSignatureError:
+            raise TokenExpiredError("Token expired error")
+        return TokenPayload(**payload)

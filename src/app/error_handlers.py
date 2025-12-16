@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from core.exceptions.db import DatabaseError
+from core.database.exceptions import DatabaseError
 
 
 def setup_system_error_handlers(app: FastAPI):

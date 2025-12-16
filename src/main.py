@@ -1,28 +1,20 @@
 import uvicorn
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 
 from core.config import config
-from auth.routers import router as users_router
+from auth.routers.users import router as users_router
+from auth.routers.auth import router as auth_router
+from app.error_handlers import setup_system_error_handlers
 
 
 app = FastAPI()
 app.include_router(users_router)
-
-
-@app.exception_handler(Exception)
-def global_exception_handler(
-    request: Request,
-    exc: Exception,
-):
-    return JSONResponse(
-        status_code=500,
-        content={"detail": "Internal Server Error"},
-    )
+app.include_router(auth_router)
 
 
 def main():
+    setup_system_error_handlers(app=app)
     uvicorn.run(
         app="main:app",
         host=config.run.APP_HOST,

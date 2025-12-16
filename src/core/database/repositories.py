@@ -85,10 +85,8 @@ class SqlalchemyRepository(Generic[T, TCreate]):
         session: AsyncSession,
         obj_id: Any,
         **update_data,
-    ) -> T | None:
+    ) -> None:
         stmt = update(self.model).where(self.model.id == obj_id).values(**update_data)
 
         await session.execute(stmt)
         await session.flush()
-
-        return await self.get_by_id(session, obj_id=obj_id)

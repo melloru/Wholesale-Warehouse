@@ -1,18 +1,15 @@
 from uuid import UUID
 from typing import Annotated
 
-from fastapi import HTTPException, status
 from fastapi.params import Depends
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.exceptions.token import TokenDecodeError
-from auth.models.users import User
-from auth.models.sessions import UserSession
-from auth.schemas.token_schemas import TokenPayload
-from core.dependencies.helpers import TokenHelperDep
-from core.dependencies.database import DbSession
-from core.dependencies.services import SessionServiceDep, UserServiceDep
+from auth.exceptions import TokenInvalidError
+from auth.models import User, UserSession
+from auth.schemas import TokenPayload
+from auth.dependencies import TokenHelperDep
+from core.dependencies import DbSession, SessionServiceDep, UserServiceDep
 
 
 async def get_maybe_token_payload(
@@ -22,14 +19,8 @@ async def get_maybe_token_payload(
     if not token:
         return None
     try:
-        try:
-            return helper.decode_token(token, verify_exp=False)
-        except TokenDecodeError:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid token type",
-            )
-    except Exception:
+        return helper.decode_token(token, verify_exp=False)
+    except TokenInvalidError:
         return None
 
 
@@ -43,7 +34,7 @@ async def get_maybe_session(
 
     return await service.get_session_if_valid(
         session,
-        id=UUID(payload.session_id),
+        session_id=UUID(payload.session_id),
         jti=UUID(payload.jti),
     )
 

@@ -17,7 +17,7 @@ class ServiceFactory:
         self._repository_factory = repository_factory
         self._helper_factory = helper_factory
 
-    def get_user_service(self):
+    def get_user_service(self) -> UserService:
         if "user_service" not in self._cache:
             self._cache["user_service"] = UserService(
                 repository=self._repository_factory.get_user_repository(),
@@ -25,14 +25,14 @@ class ServiceFactory:
             )
         return self._cache["user_service"]
 
-    def get_session_service(self):
+    def get_session_service(self) -> SessionService:
         if "session_service" not in self._cache:
             self._cache["session_service"] = SessionService(
                 repository=self._repository_factory.get_session_repository(),
             )
         return self._cache["session_service"]
 
-    def get_auth_service(self):
+    def get_auth_service(self) -> AuthService:
         if "auth_service" not in self._cache:
             self._cache["auth_service"] = AuthService(
                 user_service=self.get_user_service(),

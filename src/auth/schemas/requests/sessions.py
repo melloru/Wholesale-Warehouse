@@ -3,15 +3,12 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from core.constants import SessionFieldLengths
+from auth.constants import SessionFieldLengths
+from auth.schemas.shared.base import BaseSession
 
 
-class SessionCreateRequest(BaseModel):
+class SessionCreateRequest(BaseSession):
     user_id: int
-
-
-class SessionCreateDB(SessionCreateRequest):
-    id: UUID
     refresh_token: str
     current_jti: UUID
     revoked: bool | None = None
@@ -20,7 +17,7 @@ class SessionCreateDB(SessionCreateRequest):
         default=None,
         max_length=SessionFieldLengths.REVOKE_REASON,
     )
-    expires_at: datetime
+    exp: datetime
 
 
 class SessionUpdateRequest(BaseModel):

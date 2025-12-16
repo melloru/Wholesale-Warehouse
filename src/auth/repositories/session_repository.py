@@ -1,6 +1,6 @@
 from core.database.repositories import SqlalchemyRepository
-from auth.models.sessions import UserSession
-from auth.schemas.session_schemas import SessionCreateDB
+from auth.models import UserSession
+from auth.schemas import SessionCreateDB
 
 
 class SessionRepository(SqlalchemyRepository[UserSession, SessionCreateDB]):

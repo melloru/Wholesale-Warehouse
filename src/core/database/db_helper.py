@@ -8,7 +8,7 @@ from core.config import config
 
 class DatabaseHelper:
     def __init__(self, url: str, echo: bool = False):
-        self.engine: "AsyncEngine" = create_async_engine(url, echo=echo)
+        self.engine: AsyncEngine = create_async_engine(url, echo=echo)
         self.session_factory = async_sessionmaker(
             self.engine,
             autoflush=False,

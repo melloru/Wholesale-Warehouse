@@ -13,11 +13,11 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from core.database.models import Base
 from core.database.mixins import TimestampMixin
-from core.constants import SessionFieldLengths
+from auth.constants import SessionFieldLengths
 
 
 class UserSession(Base, TimestampMixin):
-    __tablename__ = "sessions"
+    __tablename__ = "user_sessions"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -38,7 +38,7 @@ class UserSession(Base, TimestampMixin):
         UUID(as_uuid=True),
         nullable=False,
     )
-    expires_at: Mapped[datetime] = mapped_column(
+    exp: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
     )
@@ -57,8 +57,8 @@ class UserSession(Base, TimestampMixin):
 
     __table_args__ = (
         Index("ix_sessions_user_id", "user_id", "revoked"),
-        Index("ix_sessions_expires_at_revoked", "expires_at", "revoked"),
-        Index("ix_sessions_user_id_expires_at", "user_id", "expires_at"),
+        Index("ix_sessions_expires_at_revoked", "exp", "revoked"),
+        Index("ix_sessions_user_id_expires_at", "user_id", "exp"),
         Index("ix_sessions_created_at", "created_at"),
         Index("ix_sessions_current_jti", "current_jti"),
     )

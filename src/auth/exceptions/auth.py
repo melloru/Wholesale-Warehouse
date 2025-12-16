@@ -1,4 +1,4 @@
-from core.exceptions.app import AppError
+from app.exceptions import AppError
 
 
 class AuthenticationError(AppError):
@@ -6,9 +6,6 @@ class AuthenticationError(AppError):
     status_code = 401
     error_code = "AUTHENTICATION_ERROR"
 
-
-class InvalidEmailOrPasswordError(AuthenticationError):
-    error_code = "INVALID_EMAIL_OR_PASSWORD"
 
 class AuthorizationError(AppError):
     """Ошибка авторизации"""
@@ -19,4 +16,3 @@ class AuthorizationError(AppError):
 class PermissionDeniedError(AuthorizationError):
     """Доступ запрещен"""
     error_code = "PERMISSION_DENIED"
-

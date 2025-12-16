@@ -1,10 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.models.users import User
-from auth.repositories.user_repository import UserRepository
-from auth.schemas.user_schemas import UserCreateRequest, UserCreateDB
-from auth.helpers.password_helper import PasswordHelper
 from core.services import BaseService
+from auth.models import User
+from auth.repositories import UserRepository
+from auth.helpers import PasswordHelper
+from auth.schemas import UserCreateRequest, UserCreateDB
 
 
 class UserService(BaseService[User, UserRepository, UserCreateRequest]):
@@ -20,7 +20,7 @@ class UserService(BaseService[User, UserRepository, UserCreateRequest]):
         self,
         session: AsyncSession,
         email: str,
-    ) -> User:
+    ) -> User | None:
         return await super().get_one_or_none(session, email=email)
 
     async def create(

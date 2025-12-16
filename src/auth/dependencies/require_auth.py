@@ -1,33 +1,21 @@
 from uuid import UUID
 from typing import Annotated
 
-from fastapi import Request, status
+from fastapi import status
 from fastapi.params import Depends
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.exceptions.auth import AuthenticationError
-from core.exceptions.token import TokenDecodeError
-from auth.models.users import User
-from auth.models.sessions import UserSession
-from auth.schemas.token_schemas import TokenPayload
-from core.dependencies import TokenHelperDep
-from core.dependencies.database import DbSession
-from core.dependencies.services import UserServiceDep, SessionServiceDep
-
-
-async def get_access_token_or_401(
-    token_result=Depends(
-        HTTPBearer(auto_error=False)
-    ),  # 👈 Используем стандартную схему
-) -> str:
-    """Получение токена с автоматической документацией"""
-    if not token_result:
-        raise HTTPException(401, "No access token provided")
-
-    # token_result.credentials содержит сам токен
-    return token_result.credentials
+from auth.exceptions import AuthenticationError, TokenInvalidError
+from auth.models import User, UserSession
+from auth.schemas import TokenPayload
+from auth.dependencies import TokenHelperDep
+from core.dependencies import (
+    DbSession,
+    UserServiceDep,
+    SessionServiceDep,
+)
 
 
 async def get_current_token_payload(
@@ -41,7 +29,7 @@ async def get_current_token_payload(
         )
     try:
         payload = helper.decode_token(token, verify_exp=False)
-    except TokenDecodeError:
+    except TokenInvalidError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid token type",
@@ -63,7 +51,7 @@ async def get_current_session(
     try:
         return await service.get_valid_session(
             session,
-            id=UUID(payload.session_id),
+            session_id=UUID(payload.session_id),
             jti=UUID(payload.jti),
         )
     except AuthenticationError:

@@ -27,7 +27,7 @@ class DatabaseConfig:
 
 
 class SecurityConfig:
-    JWT_SECRET_KEY: str = env.str("JWT_SECRET_KEY", "9382ASKdkfw2!320ALdslc!83$")
+    JWT_SECRET_KEY: str = env.str("JWT_SECRET_KEY", "test_jwt_key!")
     ACCESS_TOKEN_EXPIRES_DAYS: int = env.int("ACCESS_TOKEN_EXPIRES_DAYS", 1)
     REFRESH_TOKEN_EXPIRES_DAYS: int = env.int("REFRESH_TOKEN_EXPIRES_DAYS", 7)
     ACCESS_TOKEN_EXPIRES_MINUTES: int = ACCESS_TOKEN_EXPIRES_DAYS * 24 * 60

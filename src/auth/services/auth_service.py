@@ -1,17 +1,14 @@
 from uuid import UUID, uuid4
 
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.models.sessions import UserSession
-from auth.schemas.auth_schemas import LoginSchema
-from auth.schemas.session_schemas import SessionCreateDB
-from auth.schemas.token_schemas import AccessTokenResponse, TokenData, TokenPayload
+from auth.schemas.requests.auth import LoginSchema
+from auth.schemas import SessionCreateDB, AccessTokenResponse, TokenData, TokenPayload
 from auth.helpers.token_helper import TokenHelper
 from auth.helpers.password_helper import PasswordHelper
 from auth.services.user_service import UserService
 from auth.services.session_service import SessionService
-from core.exceptions.auth import InvalidEmailOrPasswordError
+from auth.exceptions import PermissionDeniedError
 
 
 class AuthService:
@@ -31,36 +28,30 @@ class AuthService:
         self,
         session: AsyncSession,
         login_data: LoginSchema,
-    ):
-        user = await self.user_service.get_one_or_none(
-            session,
-            email=login_data.email,
-        )
+    ) -> AccessTokenResponse:
+        user = await self.user_service.get_one_or_none(session, email=login_data.email)
         if not user or not self.password_helper.verify_password(
-            str(user.password_hash),
-            login_data.password_plain,
+            hashed_password=str(user.password_hash),
+            plain_password=login_data.password_plain,
         ):
-            raise InvalidEmailOrPasswordError(message="Invalid email or password")
+            raise PermissionDeniedError(message="Invalid email or password")
 
         session_id = uuid4()
         jti = uuid4()
         token_data = TokenData(session_id=str(session_id), jti=str(jti))
         access_token, _ = self.token_helper.create_access_token(token_data)
-        refresh_token, expires_at = self.token_helper.create_refresh_token(token_data)
+        refresh_token, exp = self.token_helper.create_refresh_token(token_data)
         session_data = SessionCreateDB(
             id=session_id,
             user_id=user.id,
             refresh_token=refresh_token,
             current_jti=jti,
-            expires_at=expires_at,
+            exp=exp,
         )
-        await self.session_service.create(
-            session,
-            obj_in=session_data,
-        )
+        await self.session_service.create(session, obj_in=session_data)
         return AccessTokenResponse(
             access_token=access_token,
-            expires_at=int(expires_at.timestamp()),
+            exp=int(exp.timestamp()),
         )
 
     async def refresh(
@@ -71,12 +62,12 @@ class AuthService:
         payload: TokenPayload = self.token_helper.decode_token(access_token)
         user_session = await self.session_service.get_valid_session(
             session,
-            id=UUID(payload.session_id),
+            session_id=UUID(payload.session_id),
             jti=UUID(payload.jti),
         )
         new_jti = uuid4()
         token_data = TokenData(session_id=str(user_session.id), jti=str(new_jti))
-        access_token, expires_at = self.token_helper.create_access_token(token_data)
+        access_token, exp = self.token_helper.create_access_token(token_data)
 
         await self.session_service.update_jti(
             session,
@@ -85,5 +76,5 @@ class AuthService:
         )
         return AccessTokenResponse(
             access_token=access_token,
-            expires_at=int(expires_at.timestamp()),
+            exp=int(exp.timestamp()),
         )
