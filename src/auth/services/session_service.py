@@ -13,7 +13,7 @@ from auth.exceptions.session import (
     SessionExpiredError,
 )
 from auth.exceptions.token import TokenInvalidError
-from core.services import BaseService
+from core.base_service import BaseService
 
 
 class SessionService(BaseService[UserSession, SessionRepository, SessionCreateRequest]):

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database.models import Base
-from core.database.repositories import SqlalchemyRepository
+from core.database.base_repository import SqlalchemyRepository
 
 
 T = TypeVar("T", bound=Base)

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.services import BaseService
+from core.base_service import BaseService
 from auth.models import User
 from auth.repositories import UserRepository
 from auth.helpers import PasswordHelper
