@@ -7,15 +7,17 @@ from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.exceptions import AuthenticationError, TokenInvalidError
-from auth.models import User, UserSession
-from auth.schemas import TokenPayload
-from auth.dependencies import TokenHelperDep
+
 from core.dependencies import (
     DbSession,
     UserServiceDep,
     SessionServiceDep,
 )
+from users.models import User
+from auth.exceptions import AuthenticationError, TokenInvalidError
+from auth.models import UserSession
+from auth.schemas import TokenPayload
+from auth.dependencies import TokenHelperDep
 
 
 async def get_current_token_payload(

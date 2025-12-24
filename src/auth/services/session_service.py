@@ -3,17 +3,17 @@ from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.base_service import BaseService
 from auth.models import UserSession
 from auth.repositories import SessionRepository
 from auth.schemas import SessionCreateRequest
-from auth.exceptions import AuthenticationError
-from auth.exceptions.session import (
+from auth.exceptions import (
+    AuthenticationError,
     SessionNotFoundError,
     SessionRevokedError,
     SessionExpiredError,
+    TokenInvalidError,
 )
-from auth.exceptions.token import TokenInvalidError
-from core.base_service import BaseService
 
 
 class SessionService(BaseService[UserSession, SessionRepository, SessionCreateRequest]):

@@ -2,9 +2,9 @@ import jwt
 
 from datetime import datetime, timedelta, timezone
 
-from auth.exceptions.token import TokenInvalidError, TokenExpiredError
 from core.config import config
 from auth.schemas import TokenPayload, TokenData
+from auth.exceptions import TokenInvalidError, TokenExpiredError
 
 
 class TokenHelper:

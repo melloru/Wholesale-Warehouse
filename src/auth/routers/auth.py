@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 
-from auth.schemas import LoginSchema, AccessTokenResponse
 from core.dependencies import DbSession, AuthServiceDep
+from auth.schemas import LoginSchema, AccessTokenResponse
 from auth.dependencies import CurrentToken
 from auth.exceptions import AuthenticationError, PermissionDeniedError
 

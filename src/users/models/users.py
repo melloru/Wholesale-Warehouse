@@ -13,8 +13,8 @@ from sqlalchemy.ext.mutable import MutableDict
 
 from core.database.models import Base
 from core.database.mixins import TimestampMixin
-from auth.constants import UserFieldLengths
-from auth.enums import UserRole, UserStatus
+from users.constants import UserFieldLengths
+from users.enums import UserRole, UserStatus
 
 
 class User(Base, TimestampMixin):

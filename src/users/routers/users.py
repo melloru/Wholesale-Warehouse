@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 
-from auth.schemas import UserCreateRequest, UserResponse
 from core.dependencies import DbSession, UserServiceDep
+from users.schemas import UserCreateRequest, UserResponse
 
 
 router = APIRouter(

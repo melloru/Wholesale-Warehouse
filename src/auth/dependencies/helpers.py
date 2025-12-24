@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi.params import Depends
 
 from core.factories.helper_factory import helper_factory
-from auth.helpers.token_helper import TokenHelper
+from auth.helpers import TokenHelper
 
 
 def get_token_helper() -> TokenHelper:

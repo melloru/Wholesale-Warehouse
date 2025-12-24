@@ -1,8 +1,8 @@
 from typing import Any
 
-from auth.models.users import User
+from users.models.users import User
 from auth.models.user_sessions import UserSession
-from auth.repositories.user_repository import UserRepository
+from users.repositories.user_repository import UserRepository
 from auth.repositories.session_repository import SessionRepository
 
 

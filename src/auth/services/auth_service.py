@@ -4,9 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.schemas.requests.auth import LoginSchema
 from auth.schemas import SessionCreateDB, AccessTokenResponse, TokenData, TokenPayload
-from auth.helpers.token_helper import TokenHelper
-from auth.helpers.password_helper import PasswordHelper
-from auth.services.user_service import UserService
+from auth.helpers import TokenHelper, PasswordHelper
+from users.services.user_service import UserService
 from auth.services.session_service import SessionService
 from auth.exceptions import PermissionDeniedError
 

@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi.params import Depends
 
 from core.factories.service_factory import service_factory
-from auth.services.user_service import UserService
+from users.services.user_service import UserService
 from auth.services.auth_service import AuthService
 from auth.services.session_service import SessionService
 

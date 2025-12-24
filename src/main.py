@@ -3,9 +3,9 @@ import uvicorn
 from fastapi import FastAPI
 
 from core.config import config
-from auth.routers.users import router as users_router
-from auth.routers.auth import router as auth_router
 from app.error_handlers import setup_system_error_handlers
+from auth.routers.auth import router as auth_router
+from users.routers.users import router as users_router
 
 
 app = FastAPI()

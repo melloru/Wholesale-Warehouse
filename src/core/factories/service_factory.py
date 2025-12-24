@@ -1,6 +1,6 @@
 from typing import Any
 
-from auth.services.user_service import UserService
+from users.services.user_service import UserService
 from auth.services.auth_service import AuthService
 from auth.services.session_service import SessionService
 from core.factories.helper_factory import HelperFactory, helper_factory

@@ -1,7 +1,7 @@
 from typing import Any
 
-from auth.helpers.password_helper import PasswordHelper
-from auth.helpers.token_helper import TokenHelper
+from auth.helpers import PasswordHelper
+from auth.helpers import TokenHelper
 
 
 class HelperFactory:

@@ -1,7 +1,7 @@
 from pydantic import Field
 
-from auth.enums import UserRole, UserStatus
-from auth.schemas.shared.base import BaseUser
+from users.enums import UserRole, UserStatus
+from users.schemas.shared.base import BaseUser
 
 
 class UserCreateDB(BaseUser):

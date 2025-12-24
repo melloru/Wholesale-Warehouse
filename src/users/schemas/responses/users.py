@@ -1,8 +1,8 @@
 from typing import Any
 from datetime import datetime
 
-from auth.enums import UserRole, UserStatus
-from auth.schemas.shared.base import BaseUser
+from users.enums import UserRole, UserStatus
+from users.schemas.shared.base import BaseUser
 
 
 class UserResponse(BaseUser):
