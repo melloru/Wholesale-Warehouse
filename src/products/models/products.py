@@ -5,6 +5,8 @@ from sqlalchemy import (
     Text,
     ForeignKey,
     Float,
+    UniqueConstraint,
+    Index,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -52,4 +54,15 @@ class Product(Base, TimestampMixin):
         Enum(ProductStatus, name="product_status"),
         default=ProductStatus.PENDING,
         nullable=False,
+    )
+
+    __table_args__ = (
+        UniqueConstraint("name", name="uq_products_name"),
+        Index("idx_products_category_id", "category_id"),
+        Index("idx_products_status", "status"),
+        Index(
+            "idx_products_category_id_status",
+            "category_id",
+            "status",
+        ),
     )

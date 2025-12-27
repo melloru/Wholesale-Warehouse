@@ -56,9 +56,10 @@ class UserSession(Base, TimestampMixin):
     )
 
     __table_args__ = (
-        Index("ix_sessions_user_id", "user_id", "revoked"),
-        Index("ix_sessions_expires_at_revoked", "exp", "revoked"),
-        Index("ix_sessions_user_id_expires_at", "user_id", "exp"),
-        Index("ix_sessions_created_at", "created_at"),
-        Index("ix_sessions_current_jti", "current_jti"),
+        Index("idx_sessions_user_id", "user_id"),
+        Index("idx_sessions_user_id_revoked", "user_id", "revoked"),
+        Index("idx_sessions_exp_revoked", "exp", "revoked"),
+        Index("idx_sessions_user_id_exp", "user_id", "exp"),
+        Index("idx_sessions_created_at", "created_at"),
+        Index("idx_sessions_current_jti", "current_jti"),
     )

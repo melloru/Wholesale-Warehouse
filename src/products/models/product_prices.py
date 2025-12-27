@@ -3,6 +3,9 @@ from sqlalchemy import (
     BigInteger,
     ForeignKey,
     Integer,
+    Index,
+    UniqueConstraint,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -33,4 +36,27 @@ class ProductPrice(Base, TimestampMixin):
         Enum(CurrencyCode),
         nullable=False,
         comment="Валюта (должна совпадать с валютой продукта)",
+    )
+
+    __table_args__ = (
+        UniqueConstraint(
+            "product_id",
+            "min_quantity",
+            name="uq_product_prices_product_id_min_qty",
+        ),
+        Index(
+            "idx_product_prices_product_id_min_qty_for_quantity",
+            "product_id",
+            text("min_quantity DESC"),
+        ),
+        Index(
+            "idx_product_prices_quantity_price",
+            "min_quantity",
+            "price_per_unit_minor",
+        ),
+        Index(
+            "idx_product_prices_price_quantity",
+            "price_per_unit_minor",
+            "min_quantity",
+        ),
     )

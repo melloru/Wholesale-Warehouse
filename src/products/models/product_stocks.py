@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Index
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.database.models import Base
@@ -26,4 +26,13 @@ class ProductStock(Base, TimestampMixin):
         default=False,
         nullable=False,
         comment="Товар поставляется под заказ (нет на складе)",
+    )
+
+    __table_args__ = (
+        Index("idx_product_stocks_product_id", "product_id"),
+        Index(
+            "idx_product_stocks_product_id_available_qty",
+            "product_id",
+            "available_quantity",
+        ),
     )

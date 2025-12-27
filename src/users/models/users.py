@@ -84,8 +84,7 @@ class User(Base, TimestampMixin):
     )
 
     __table_args__ = (
-        UniqueConstraint("email", name="ux_users_email"),
-        Index("ix_users_email", "email"),
-        Index("ix_users_status", "status"),
-        Index("ix_users_role_status", "role", "status"),
+        UniqueConstraint("email", name="uq_users_email"),
+        Index("idx_users_status", "status"),
+        Index("idx_users_role_status", "role", "status"),
     )
