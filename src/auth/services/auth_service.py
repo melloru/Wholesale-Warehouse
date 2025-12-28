@@ -2,11 +2,16 @@ from uuid import UUID, uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.schemas.requests.auth import LoginSchema
-from auth.schemas import SessionCreateDB, AccessTokenResponse, TokenData, TokenPayload
+from auth.schemas import (
+    LoginSchema,
+    SessionCreateDB,
+    AccessTokenResponse,
+    TokenData,
+    TokenPayload,
+)
 from auth.helpers import TokenHelper, PasswordHelper
-from users.services.user_service import UserService
-from auth.services.session_service import SessionService
+from users.services import UserService
+from auth.services import SessionService
 from auth.exceptions import PermissionDeniedError
 
 

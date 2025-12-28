@@ -13,6 +13,16 @@ CreateSchema = TypeVar("CreateSchema", bound=BaseModel)
 
 
 class BaseService(Generic[T, R, CreateSchema]):
+    """
+    Базовый сервис для стандартных CRUD операций
+    Args:
+        T: Тип сущности (модель)
+        R: Тип репозитория
+        CreateSchema: Тип схемы создания сущности
+    Attributes:
+        repository (R): Репозиторий для доступа к данным
+    """
+
     def __init__(self, repository: R):
         self.repository = repository
 
