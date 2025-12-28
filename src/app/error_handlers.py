@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
 from core.database.exceptions import DatabaseError
@@ -16,7 +16,7 @@ def setup_system_error_handlers(app: FastAPI):
         exc: DatabaseError,
     ):
         return JSONResponse(
-            status_code=500,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={
                 "error": "Internal Server Error",
                 "message": "Database error",
@@ -29,7 +29,7 @@ def setup_system_error_handlers(app: FastAPI):
         exc: Exception,
     ):
         return JSONResponse(
-            status_code=500,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={
                 "error": "Internal Server Error",
                 "message": "Unexpected error",

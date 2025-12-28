@@ -27,6 +27,9 @@ class DatabaseHelper:
             finally:
                 await session.close()
 
+    async def dispose(self) -> None:
+        await self.engine.dispose()
+
 
 db_helper = DatabaseHelper(
     url=config.db.db_url,
