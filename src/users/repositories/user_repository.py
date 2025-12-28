@@ -5,7 +5,3 @@ from users.schemas import UserCreateDB
 
 class UserRepository(SqlalchemyRepository[User, UserCreateDB]):
     pass
-
-
-def get_user_repository() -> UserRepository:
-    return UserRepository(User)

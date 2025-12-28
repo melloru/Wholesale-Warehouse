@@ -5,7 +5,3 @@ from core.database.base_repository import SqlalchemyRepository
 
 class CategoryRepository(SqlalchemyRepository[ProductCategory, CategoryCreateDB]):
     pass
-
-
-def get_category_repository() -> CategoryRepository:
-    return CategoryRepository(ProductCategory)

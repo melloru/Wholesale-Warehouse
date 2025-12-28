@@ -1,28 +1,25 @@
 from uuid import UUID
 from typing import Annotated
 
-from fastapi import status
-from fastapi.params import Depends
+from fastapi import Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
-from core.dependencies import (
-    DbSession,
-    UserServiceDep,
-    SessionServiceDep,
-)
+from core.database.db_helper import db_helper
+from core.factories import helper_factory, service_factory
 from users.models import User
-from auth.exceptions import AuthenticationError, TokenInvalidError
 from auth.models import UserSession
 from auth.schemas import TokenPayload
-from auth.dependencies import TokenHelperDep
+from users.services import UserService
+from auth.services import SessionService
+from auth.helpers import TokenHelper
+from auth.exceptions import AuthenticationError, TokenInvalidError
 
 
 async def get_current_token_payload(
     token: Annotated[str | None, Depends(HTTPBearer(auto_error=False))],
-    helper: TokenHelperDep,
+    helper: Annotated[TokenHelper, Depends(helper_factory.get_token_helper())],
 ) -> TokenPayload:
     if not token:
         raise HTTPException(
@@ -46,9 +43,9 @@ async def get_current_token_payload(
 
 
 async def get_current_session(
-    session: DbSession,
+    session: Annotated[AsyncSession, Depends(db_helper.get_session)],
     payload: Annotated[TokenPayload, Depends(get_current_token_payload)],
-    service: SessionServiceDep,
+    service: Annotated[SessionService, Depends(service_factory.get_session_service)],
 ) -> UserSession:
     try:
         return await service.get_valid_session(
@@ -64,9 +61,9 @@ async def get_current_session(
 
 
 async def get_current_user(
-    session: AsyncSession,
+    session: Annotated[AsyncSession, Depends(db_helper.get_session)],
     user_session: Annotated[UserSession, Depends(get_current_session)],
-    service: UserServiceDep,
+    service: Annotated[UserService, Depends(service_factory.get_user_service)],
 ) -> User:
     user = await service.get_by_id(session, id=user_session.user_id)
 
@@ -76,17 +73,3 @@ async def get_current_user(
             detail="User not found",
         )
     return user
-
-
-CurrentTokenPayload = Annotated[
-    TokenPayload,
-    Depends(get_current_token_payload),
-]
-CurrentSession = Annotated[
-    UserSession,
-    Depends(get_current_session),
-]
-CurrentUser = Annotated[
-    User,
-    Depends(get_current_user),
-]

@@ -1,10 +1,19 @@
 from typing import Any
 
-from users.services.user_service import UserService
-from auth.services.auth_service import AuthService
-from auth.services.session_service import SessionService
-from core.factories.helper_factory import HelperFactory, helper_factory
-from core.factories.repository_factory import RepositoryFactory, repository_factory
+from users.services import UserService
+from auth.services import SessionService, AuthService
+from products.services import (
+    ProductService,
+    CategoryService,
+    StockService,
+    PriceService,
+)
+from core.factories import (
+    HelperFactory,
+    RepositoryFactory,
+    helper_factory,
+    repository_factory,
+)
 
 
 class ServiceFactory:
@@ -41,6 +50,34 @@ class ServiceFactory:
                 password_helper=self._helper_factory.get_password_helper(),
             )
         return self._cache["auth_service"]
+
+    def get_product_service(self) -> ProductService:
+        if "product_service" not in self._cache:
+            self._cache["product_service"] = ProductService(
+                repository=self._repository_factory.get_product_repository()
+            )
+        return self._cache["product_service"]
+
+    def get_category_service(self) -> CategoryService:
+        if "category_service" not in self._cache:
+            self._cache["category_service"] = CategoryService(
+                repository=self._repository_factory.get_category_repository()
+            )
+        return self._cache["category_service"]
+
+    def get_stock_service(self) -> StockService:
+        if "stock_service" not in self._cache:
+            self._cache["stock_service"] = StockService(
+                repository=self._repository_factory.get_stock_repository()
+            )
+        return self._cache["stock_service"]
+
+    def get_price_service(self) -> PriceService:
+        if "price_service" not in self._cache:
+            self._cache["price_service"] = PriceService(
+                repository=self._repository_factory.get_price_repository()
+            )
+        return self._cache["price_service"]
 
     def clear(self):
         self._cache.clear()

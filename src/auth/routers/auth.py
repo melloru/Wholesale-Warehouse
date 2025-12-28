@@ -1,9 +1,14 @@
-from fastapi import APIRouter, HTTPException, status
+from typing import Annotated
 
-from core.dependencies import DbSession, AuthServiceDep
+from fastapi import APIRouter, HTTPException, status, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from auth.dependencies.token_deps import get_access_token_or_401
+from auth.services import AuthService
+from core.database.db_helper import db_helper
 from auth.schemas import LoginSchema, AccessTokenResponse
-from auth.dependencies import CurrentToken
 from auth.exceptions import AuthenticationError, PermissionDeniedError
+from core.factories import service_factory
 
 
 router = APIRouter(
@@ -14,8 +19,8 @@ router = APIRouter(
 
 @router.post("/login", response_model=AccessTokenResponse)
 async def login(
-    session: DbSession,
-    service: AuthServiceDep,
+    session: Annotated[AsyncSession, Depends(db_helper.get_session)],
+    service: Annotated[AuthService, Depends(service_factory.get_auth_service)],
     login_data: LoginSchema,
 ):
     try:
@@ -29,9 +34,9 @@ async def login(
 
 @router.post("/refresh", response_model=AccessTokenResponse)
 async def refresh(
-    session: DbSession,
-    access_token: CurrentToken,
-    service: AuthServiceDep,
+    session: Annotated[AsyncSession, Depends(db_helper.get_session)],
+    access_token: Annotated[str, Depends(get_access_token_or_401)],
+    service: Annotated[AuthService, Depends(service_factory.get_auth_service)],
 ):
     try:
         return await service.refresh(session, access_token=access_token)

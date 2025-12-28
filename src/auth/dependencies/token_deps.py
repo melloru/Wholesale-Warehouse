@@ -14,6 +14,3 @@ async def get_access_token_or_401(
         )
 
     return token.credentials
-
-
-CurrentToken = Annotated[str, Depends(get_access_token_or_401)]
