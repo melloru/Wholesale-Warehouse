@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Index
+from sqlalchemy import Index, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.database.models import Base
@@ -29,7 +29,7 @@ class ProductStock(Base, TimestampMixin):
     )
 
     __table_args__ = (
-        Index("idx_product_stocks_product_id", "product_id"),
+        UniqueConstraint("product_id", name="uq_product_stocks_product_id"),
         Index(
             "idx_product_stocks_product_id_available_qty",
             "product_id",

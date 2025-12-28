@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
-from users.schemas.shared.types import NameStr, PublicNameStr, PhoneStr
+from users.schemas.shared.custom_types import NameStr, PublicNameStr, PhoneStr
 
 
 class BaseUser(BaseModel):
