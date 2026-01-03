@@ -11,4 +11,8 @@ class PriceService(
         PriceCreateRequest,
     ]
 ):
-    pass
+    def __init__(self, repository: PriceRepository):
+        super().__init__(repository=repository)
+
+    async def get_prices_for_product(self):
+        pass

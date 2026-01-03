@@ -11,4 +11,8 @@ class StockService(
         StockCreateRequest,
     ]
 ):
-    pass
+    def __init__(self, repository: StockRepository):
+        super().__init__(repository=repository)
+
+    async def get_stock_for_product(self):
+        pass

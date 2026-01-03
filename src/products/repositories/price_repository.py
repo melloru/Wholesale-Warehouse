@@ -3,5 +3,10 @@ from products.schemas import PriceCreateDB
 from core.database.base_repository import SqlalchemyRepository
 
 
-class PriceRepository(SqlalchemyRepository[ProductPrice, PriceCreateDB]):
+class PriceRepository(
+    SqlalchemyRepository[
+        ProductPrice,
+        PriceCreateDB,
+    ]
+):
     pass

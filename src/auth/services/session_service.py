@@ -16,7 +16,13 @@ from auth.exceptions import (
 )
 
 
-class SessionService(BaseService[UserSession, SessionRepository, SessionCreateRequest]):
+class SessionService(
+    BaseService[
+        UserSession,
+        SessionRepository,
+        SessionCreateRequest,
+    ]
+):
     def __init__(self, repository: SessionRepository):
         super().__init__(repository)
 

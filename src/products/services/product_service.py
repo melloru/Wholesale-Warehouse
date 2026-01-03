@@ -11,4 +11,5 @@ class ProductService(
         ProductCreateRequest,
     ]
 ):
-    pass
+    def __init__(self, repository: ProductRepository):
+        super().__init__(repository=repository)

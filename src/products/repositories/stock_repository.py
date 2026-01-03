@@ -3,5 +3,10 @@ from products.schemas import StockCreateDB
 from core.database.base_repository import SqlalchemyRepository
 
 
-class StockRepository(SqlalchemyRepository[ProductStock, StockCreateDB]):
+class StockRepository(
+    SqlalchemyRepository[
+        ProductStock,
+        StockCreateDB,
+    ]
+):
     pass

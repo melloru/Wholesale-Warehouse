@@ -11,4 +11,5 @@ class CategoryService(
         CategoryCreateRequest,
     ]
 ):
-    pass
+    def __init__(self, repository: CategoryRepository):
+        super().__init__(repository=repository)
