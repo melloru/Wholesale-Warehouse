@@ -9,8 +9,8 @@ from alembic import context
 
 from core.config import config
 from core.database.models import Base
-from users.models.users import User  # noqa: F401
-from auth.models.user_sessions import UserSession  # noqa: F401
+from users.models import User, Role, Permission, RolePermission  # noqa: F401
+from auth.models import UserSession  # noqa: F401
 
 
 alembic_config = context.config

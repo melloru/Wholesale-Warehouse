@@ -7,6 +7,7 @@ from sqlalchemy import (
     UniqueConstraint,
     Index,
     String,
+    ForeignKey,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.mutable import MutableDict
@@ -14,13 +15,18 @@ from sqlalchemy.ext.mutable import MutableDict
 from core.database.models import Base
 from core.database.mixins import TimestampMixin
 from users.constants import UserFieldLengths
-from users.enums import UserRole, UserStatus
+from users.enums import UserStatus
 
 
 class User(Base, TimestampMixin):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+
+    role_id: Mapped[int] = mapped_column(
+        ForeignKey("roles.id", ondelete="RESTRICT"),
+        nullable=False,
+    )
 
     email: Mapped[str] = mapped_column(
         String(UserFieldLengths.EMAIL),
@@ -51,18 +57,6 @@ class User(Base, TimestampMixin):
     phone_verified: Mapped[bool] = mapped_column(default=False)
     email_verified: Mapped[bool] = mapped_column(default=False)
 
-    permissions: Mapped[dict] = mapped_column(
-        MutableDict.as_mutable(JSON),
-        default=dict,
-        nullable=False,
-    )
-
-    role: Mapped[UserRole] = mapped_column(
-        Enum(UserRole, name="user_role"),
-        default=UserRole.CUSTOMER,
-        nullable=False,
-    )
-
     status: Mapped[UserStatus] = mapped_column(
         Enum(UserStatus, name="user_status"),
         default=UserStatus.PENDING,
@@ -86,5 +80,5 @@ class User(Base, TimestampMixin):
     __table_args__ = (
         UniqueConstraint("email", name="uq_users_email"),
         Index("idx_users_status", "status"),
-        Index("idx_users_role_status", "role", "status"),
+        Index("idx_users_role_status", "role_id", "status"),
     )
