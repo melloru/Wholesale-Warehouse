@@ -1,19 +1,19 @@
 from datetime import datetime
 
 from sqlalchemy import (
-    JSON,
     DateTime,
     Enum,
     UniqueConstraint,
     Index,
     String,
     ForeignKey,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.ext.mutable import MutableDict
 
 from core.database.models import Base
 from core.database.mixins import TimestampMixin
+from core.config.permissions import RoleEnum
 from users.constants import UserFieldLengths
 from users.enums import UserStatus
 
@@ -26,6 +26,8 @@ class User(Base, TimestampMixin):
     role_id: Mapped[int] = mapped_column(
         ForeignKey("roles.id", ondelete="RESTRICT"),
         nullable=False,
+        default=RoleEnum.USER.id,
+        server_default=text("1"),
     )
 
     email: Mapped[str] = mapped_column(

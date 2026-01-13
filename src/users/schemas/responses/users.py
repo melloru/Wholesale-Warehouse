@@ -1,7 +1,6 @@
-from typing import Any
 from datetime import datetime
 
-from users.enums import UserRole, UserStatus
+from users.enums import UserStatus
 from users.schemas.shared.base import BaseUser
 
 
@@ -9,7 +8,6 @@ class UserResponse(BaseUser):
     id: int
     email_verified: bool
     phone_verified: bool
-    role: UserRole
     status: UserStatus
     is_staff: bool
     is_superadmin: bool
@@ -19,6 +17,6 @@ class UserResponse(BaseUser):
 
 
 class UserDetailResponse(UserResponse):
-    permissions: dict[str, Any]
+    role_id: int
     is_deleted: bool
     deleted_at: datetime | None

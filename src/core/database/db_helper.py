@@ -1,4 +1,3 @@
-from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -17,7 +16,6 @@ class DatabaseHelper:
             expire_on_commit=False,
         )
 
-    @asynccontextmanager
     async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
         async with self.session_factory() as session:
             try:
@@ -26,8 +24,6 @@ class DatabaseHelper:
             except Exception as e:
                 await session.rollback()
                 raise e
-            finally:
-                await session.close()
 
     async def dispose(self) -> None:
         await self.engine.dispose()

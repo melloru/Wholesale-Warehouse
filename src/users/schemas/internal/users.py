@@ -1,12 +1,13 @@
 from pydantic import Field
 
-from users.enums import UserRole, UserStatus
+from core.config.permissions import RoleEnum
+from users.enums import UserStatus
 from users.schemas.shared.base import BaseUser
 
 
 class UserCreateDB(BaseUser):
     password_hash: str
-    role: UserRole = Field(default=UserRole.CUSTOMER)
+    role_id: int = Field(default=RoleEnum.USER.id)
     status: UserStatus = Field(default=UserStatus.ACTIVE)
     email_verified: bool = Field(default=False)
     phone_verified: bool = Field(default=False)

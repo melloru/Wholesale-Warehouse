@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database.db_helper import db_helper
-from core.config.permissions import Permission as PermissionEnum, Role as RoleEnum
+from core.config.permissions import PermissionEnum, RoleEnum
 from users.models import (
     Permission as PermissionDb,
     Role as RoleDb,

@@ -1,9 +1,7 @@
-from dataclasses import dataclass
 from enum import Enum
-from typing import NamedTuple
 
 
-class Permission(Enum):
+class PermissionEnum(Enum):
     """Enum для прав доступа"""
 
     PRODUCT_CREATE = ("product:create", "Создание новых товаров")
@@ -26,11 +24,11 @@ class Permission(Enum):
         self.description = description
 
     @classmethod
-    def all(cls) -> list["Permission"]:
+    def all(cls) -> list["PermissionEnum"]:
         return list(cls)
 
 
-class Role(Enum):
+class RoleEnum(Enum):
     """Роль с ID, именем и описанием"""
 
     USER = (1, "user", "Покупатель/клиент")
@@ -46,43 +44,43 @@ class Role(Enum):
         self.id = id
         self.role_name = role_name
         self.description = description
-        self.permission_codes: tuple[Permission, ...] = ()
+        self.permission_codes: tuple[PermissionEnum, ...] = ()
 
     @classmethod
-    def all(cls) -> list["Role"]:
+    def all(cls) -> list["RoleEnum"]:
         """Все роли"""
 
         return list(cls)
 
-    def permissions(self) -> tuple[Permission, ...]:
+    def permissions(self) -> tuple[PermissionEnum, ...]:
         """Разрешения роли (ленивая загрузка)"""
 
         if not self.permission_codes:
             self.permission_codes = self._get_permissions()
         return self.permission_codes
 
-    def _get_permissions(self) -> tuple[Permission, ...]:
+    def _get_permissions(self) -> tuple[PermissionEnum, ...]:
         """Получить разрешения для роли"""
 
-        if self == Role.USER:
+        if self == RoleEnum.USER:
             return ()
-        elif self == Role.SELLER:
+        elif self == RoleEnum.SELLER:
             return (
-                Permission.PRODUCT_CREATE,
-                Permission.PRODUCT_EDIT_OWN,
-                Permission.PRODUCT_DELETE_OWN,
-                Permission.PRICE_EDIT_OWN,
-                Permission.STOCK_EDIT_OWN,
+                PermissionEnum.PRODUCT_CREATE,
+                PermissionEnum.PRODUCT_EDIT_OWN,
+                PermissionEnum.PRODUCT_DELETE_OWN,
+                PermissionEnum.PRICE_EDIT_OWN,
+                PermissionEnum.STOCK_EDIT_OWN,
             )
-        elif self == Role.SUPER_ADMIN:
+        elif self == RoleEnum.SUPER_ADMIN:
             return (
-                Permission.PRODUCT_EDIT,
-                Permission.PRODUCT_DELETE,
-                Permission.PRODUCT_APPROVE,
-                Permission.PRICE_EDIT,
-                Permission.STOCK_EDIT,
-                Permission.CATEGORY_EDIT,
-                Permission.USER_EDIT,
-                Permission.SELLER_APPROVE,
+                PermissionEnum.PRODUCT_EDIT,
+                PermissionEnum.PRODUCT_DELETE,
+                PermissionEnum.PRODUCT_APPROVE,
+                PermissionEnum.PRICE_EDIT,
+                PermissionEnum.STOCK_EDIT,
+                PermissionEnum.CATEGORY_EDIT,
+                PermissionEnum.USER_EDIT,
+                PermissionEnum.SELLER_APPROVE,
             )
         return ()

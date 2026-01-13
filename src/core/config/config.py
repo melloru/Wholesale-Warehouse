@@ -26,6 +26,18 @@ class DatabaseConfig:
         )
 
 
+class RedisConfig:
+    REDIS_HOST: str = env.str("REDIS_HOST", "localhost")
+    REDIS_PORT: int = env.int("REDIS_PORT", 6379)
+    REDIS_DB: int = env.int("REDIS_DB", 0)
+    REDIS_PASSWORD: str | None = env.str("REDIS_PASSWORD", None)
+    REDIS_SSL: bool = env.bool("REDIS_SSL", False)
+    REDIS_MAX_CONNECTIONS: int = env.int("REDIS_MAX_CONNECTIONS", 10)
+
+    REDIS_CACHE_TTL: int = env.int("REDIS_CACHE_TTL", 3600)
+    REDIS_CACHE_ENABLED: bool = env.bool("REDIS_CACHE_ENABLED", True)
+
+
 class SecurityConfig:
     JWT_SECRET_KEY: str = env.str("JWT_SECRET_KEY", "test_jwt_key!")
     ACCESS_TOKEN_EXPIRES_DAYS: int = env.int("ACCESS_TOKEN_EXPIRES_DAYS", 1)
@@ -40,6 +52,7 @@ class Config:
     db: DatabaseConfig = DatabaseConfig()
     run: RunConfig = RunConfig()
     security: SecurityConfig = SecurityConfig()
+    redis: RedisConfig = RedisConfig()
 
 
 config = Config()
