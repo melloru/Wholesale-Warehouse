@@ -1,6 +1,6 @@
 from redis.asyncio import Redis, ConnectionPool
 from redis.asyncio.client import Pipeline
-from redis.exceptions import RedisError
+from redis.exceptions import RedisError, WatchError
 
 from typing import AsyncGenerator
 
@@ -23,7 +23,6 @@ class RedisHelper:
             port=config.redis.REDIS_PORT,
             db=config.redis.REDIS_DB,
             password=config.redis.REDIS_PASSWORD,
-            ssl=config.redis.REDIS_SSL,
             decode_responses=True,
             encoding="utf-8",
             max_connections=self.max_connections,
@@ -38,26 +37,48 @@ class RedisHelper:
 
     async def get_pipeline_client(
         self,
-        transaction: bool = False,
-    ) -> AsyncGenerator[Pipeline, None]:
-        """Контекст для MULTI/EXEC операций"""
-        async for client in self.get_client():
-            pipe = client.pipeline(transaction=transaction)
-            try:
-                yield pipe
-                await pipe.execute()
-            except RedisError:
-                if transaction:
-                    await pipe.reset()
-                raise
-
-    def get_watched_client(
-        self,
-        watch_keys: list[str] | None = None,
-        with_pipeline: bool = False,
         transaction: bool = True,
     ):
-        pass
+        async def dependency() -> AsyncGenerator[Pipeline, None]:
+            """Контекст для MULTI/EXEC операций"""
+            async for client in self.get_client():
+                pipe = client.pipeline(transaction=transaction)
+                try:
+                    yield pipe
+                    await pipe.execute()
+                except RedisError:
+                    if transaction:
+                        await pipe.reset()
+                    raise
+
+        return dependency
+
+    async def get_watched_pipeline_client(
+        self,
+        watch_keys: list[str] | None = None,
+    ):
+        async def dependency() -> AsyncGenerator[Pipeline, None]:
+            async for client in self.get_client():
+                if watch_keys is not None:
+                    await client.watch(*watch_keys)
+
+                pipe = client.pipeline(transaction=True)
+
+                try:
+                    yield pipe
+                    await pipe.execute()
+                except WatchError:
+                    raise RedisError(
+                        f"WATCH failed: ключи {watch_keys} изменились. "
+                        "Транзакция отменена."
+                    )
+                finally:
+                    if watch_keys is not None:
+                        await client.unwatch()
+                    await pipe.reset()
+                    raise
+
+        return dependency
 
     async def dispose(self):
         if self.pool:
@@ -66,5 +87,5 @@ class RedisHelper:
 
 
 redis_helper = RedisHelper(
-    max_connections=config.REDIS_MAX_CONNECTIONS,
+    max_connections=config.redis.REDIS_MAX_CONNECTIONS,
 )
