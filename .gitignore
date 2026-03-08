@@ -5,3 +5,5 @@ __pycache__
 .env
 dont_push/
 doc.md
+env-nginx.json
+logs

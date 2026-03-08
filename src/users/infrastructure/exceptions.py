@@ -1,0 +1,2 @@
+class UserIntegrityError(Exception):
+    pass

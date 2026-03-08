@@ -5,10 +5,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from core.config import config
-from core.database.db_helper import db_helper
-from app.error_handlers import setup_system_error_handlers
-from auth.routers.auth import router as auth_router
-from users.routers.users import router as users_router
+from core.infrastructure.database.db_helper import db_helper
+from core.error_handlers import setup_system_error_handlers
+from auth.api.routers import auth_router
+from users.api.routers import users_router, users_admin_router
 
 
 @asynccontextmanager
@@ -20,6 +20,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(users_router)
+app.include_router(users_admin_router)
 app.include_router(auth_router)
 
 

@@ -17,4 +17,5 @@ redis = "^7.1.0"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.14.6"
 black = "^25.11.0"
+requests = "^2.32.5"
 

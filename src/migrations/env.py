@@ -8,9 +8,8 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from core.config import config
-from core.database.models import Base
-from users.models import User, Role, Permission, RolePermission  # noqa: F401
-from auth.models import UserSession  # noqa: F401
+from core.infrastructure.database.models import Base
+from auth.infrastructure.database.models import UserSession  # noqa: F401
 
 
 alembic_config = context.config
