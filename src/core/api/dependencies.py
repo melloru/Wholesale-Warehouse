@@ -13,7 +13,6 @@ from auth.application.exceptions import (
     SessionNotFoundError,
     SessionRevokedError,
 )
-from auth.application.schemas import TokenPayload
 from auth.application.services import SessionService
 from core.config.permissions import RoleEnum
 from core.infrastructure.database.db_helper import db_helper
@@ -21,7 +20,6 @@ from users.infrastructure.helpers import PasswordHelper
 from users.api.dependencies import get_user_service
 from users.application.services import UserService
 from users.domain.entities import UserEntity
-from auth.application.services import AuthService, SessionService
 from auth.infrastructure.database.models import UserSession
 from auth.infrastructure.database.repositories import SessionRepository
 from auth.infrastructure.session_mapper import SessionMapper

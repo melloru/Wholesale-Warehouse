@@ -11,7 +11,7 @@ from auth.application.schemas import (
 from users.infrastructure.helpers import PasswordHelper
 from users.application.services import UserService
 from auth.application.services import SessionService, TokenService
-from auth.application.exceptions import PermissionDeniedError, SessionExpiredError
+from auth.application.exceptions import PermissionDeniedError
 
 
 class AuthService:

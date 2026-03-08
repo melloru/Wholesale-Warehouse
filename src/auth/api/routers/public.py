@@ -2,23 +2,21 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.api.dependencies import get_auth_service, get_access_token_or_401
+from auth.api.dependencies import get_auth_service
 from auth.application.exceptions import (
     PermissionDeniedError,
-    AuthenticationError,
     TokenInvalidError,
     SessionNotFoundError,
     SessionRevokedError,
     SessionExpiredError,
 )
 from auth.application.schemas import AccessTokenResponse, LoginSchema
-from auth.application.services import AuthService, SessionService
+from auth.application.services import AuthService
 from core.api.dependencies import (
     get_session,
-    get_session_service,
     get_access_token,
     get_access_token_optional,
 )

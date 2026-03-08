@@ -11,7 +11,6 @@ from core.infrastructure.database.models import Base
 from core.infrastructure.database.mixins import TimestampMixin
 from core.config.permissions import RoleEnum
 from users.domain.constants import UserFieldLengths
-from users.domain.entities import UserEntity
 from users.domain.enums import UserStatus
 
 if TYPE_CHECKING:

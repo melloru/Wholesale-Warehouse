@@ -1,4 +1,3 @@
-from auth.application.exceptions.auth import AuthenticationError
 
 
 class SessionError(Exception):

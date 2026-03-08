@@ -1,18 +1,14 @@
-from dataclasses import asdict
-from uuid import UUID, uuid4
+from uuid import UUID
 from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.application.schemas import (
-    TokenCreate,
     SessionCreateInternal,
 )
 from auth.domain.entities import UserSessionEntity
-from auth.infrastructure.database.models import UserSession
 from auth.infrastructure.database.repositories import SessionRepository
 from auth.application.exceptions import (
-    AuthenticationError,
     SessionNotFoundError,
     SessionRevokedError,
     SessionExpiredError,
@@ -48,7 +44,7 @@ class SessionService:
         session: AsyncSession,
         session_id: UUID,
         jti: UUID,
-    ) -> UserSessionEntity | None:
+    ) -> UserSessionEntity:
         session_entity = await self.session_repository.get_by_id(
             session,
             session_id=session_id,
