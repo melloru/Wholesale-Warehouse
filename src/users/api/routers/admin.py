@@ -34,4 +34,10 @@ async def get_user_by_id(
         first_name=user_entity.first_name,
         last_name=user_entity.last_name,
         public_name=user_entity.public_name,
+        email_verified=user_entity.email_verified,
+        email=user_entity.email,
+        phone_number=user_entity.phone_number,
+        phone_verified=user_entity.phone_verified,
+        role_id=user_entity.role_id,
+        status=user_entity.status,
     )

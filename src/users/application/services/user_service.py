@@ -9,6 +9,7 @@ from users.api.schemas.requests import (
 )
 
 from users.application.exceptions import UserAlreadyExistsError
+from users.domain.enums import UserStatus
 from users.infrastructure.cache.cache_user_repository import CachedUserRepository
 from users.infrastructure.helpers import PasswordHelper
 from users.infrastructure.exceptions import UserIntegrityError
@@ -45,6 +46,9 @@ class UserService:
             last_name=user_data.last_name,
             public_name=user_data.public_name,
             role_id=getattr(user_data, "role_id", RoleEnum.USER.id),
+            status=getattr(user_data, "status", UserStatus.PENDING),
+            phone_verified=getattr(user_data, "phone_verified", False),
+            email_verified=getattr(user_data, "email_verified", False),
         )
         try:
             return await self.user_repository.create(session, entity=user_entity)
