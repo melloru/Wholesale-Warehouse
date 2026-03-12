@@ -3,9 +3,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.application.schemas import (
-    SessionCreateInternal,
-)
+from auth.application.schemas.sessions import SessionCreateInternal
 from auth.domain.entities import UserSessionEntity
 from auth.infrastructure.database.repositories import SessionRepository
 from auth.application.exceptions import (
@@ -15,7 +13,7 @@ from auth.application.exceptions import (
     TokenInvalidError,
 )
 from auth.application.services import TokenService
-from core.infrastructure.database import db_helper
+from core.infrastructure.database import db_manager
 
 
 class SessionService:
@@ -54,7 +52,7 @@ class SessionService:
         elif session_entity.revoked:
             raise SessionRevokedError("Session revoked")
         elif datetime.now(timezone.utc) > session_entity.exp:
-            async for nested_session in db_helper.get_session():
+            async for nested_session in db_manager.get_session():
                 session_entity.revoked = True
                 session_entity.revoke_reason = "Session expired"
                 await self.session_repository.update(

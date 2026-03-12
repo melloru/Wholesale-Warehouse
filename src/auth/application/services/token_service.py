@@ -3,7 +3,7 @@ import jwt
 from datetime import datetime, timedelta, timezone
 
 from core.config import config
-from auth.application.schemas import TokenPayload, TokenCreate
+from auth.application.schemas.tokens import TokenPayload, TokenCreate
 from auth.application.exceptions import TokenInvalidError, TokenExpiredError
 
 

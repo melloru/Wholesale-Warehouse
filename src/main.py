@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from core.config import config
-from core.infrastructure.database.db_helper import db_helper
+from core.infrastructure.database.db_helper import db_manager
 from core.error_handlers import setup_system_error_handlers
 from auth.api.routers import auth_router
 from users.api.routers import users_router, users_admin_router
@@ -15,7 +15,7 @@ from users.api.routers import users_router, users_admin_router
 async def lifespan(app: FastAPI):
     setup_system_error_handlers(app=app)
     yield
-    await db_helper.engine.dispose()
+    await db_manager.engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan)

@@ -4,20 +4,16 @@ from enum import Enum
 class PermissionEnum(Enum):
     """Enum для прав доступа"""
 
-    PRODUCT_CREATE = ("product:create", "Создание новых товаров")
-    PRODUCT_EDIT_OWN = ("product:edit_own", "Изменение своих товаров")
-    PRODUCT_DELETE_OWN = ("product:delete_own", "Удаление своих товаров")
-    PRICE_EDIT_OWN = ("price:edit_own", "Настройка цен своих товаров")
-    STOCK_EDIT_OWN = ("stock:edit_own", "Обновление кол-ва своего товара")
+    LEAVE_REVIEW = ("review_create", "Создание отзывов")
+    ANSWER_REVIEW_OWN = ("review_answer_own", "Ответить на свой отзыв")
 
-    PRODUCT_EDIT = ("product:edit", "Изменение любых товаров")
-    PRODUCT_DELETE = ("product:delete", "Удаление любых товаров")
-    PRODUCT_APPROVE = ("product:approve", "Одобрение товаров")
-    PRICE_EDIT = ("price:edit", "Настройка любых цен")
-    STOCK_EDIT = ("stock:edit", "Управление остатками")
-    CATEGORY_EDIT = ("category:edit", "Редактирование категорий")
-    USER_EDIT = ("user:edit", "Редактирование пользователей")
-    SELLER_APPROVE = ("user:approve", "Одобрение продавцов")
+    PRODUCT_CREATE = ("product_create", "Создать товар")
+    PRODUCT_EDIT_OWN = ("product_edit_own", "Изменить свой товар")
+    PRODUCT_DELETE_OWN = ("product_delete_own", "Удалить свой товар")
+    PRICE_EDIT_OWN = ("price_edit_own", "Настроить цену своего товара")
+    STOCK_EDIT_OWN = ("stock_edit_own", "Обновить кол-во своего товара")
+
+    ADMIN_PANEL = ("admin_panel", "Админ панель")
 
     def __init__(self, code: str, description: str):
         self.code = code
@@ -73,14 +69,5 @@ class RoleEnum(Enum):
                 PermissionEnum.STOCK_EDIT_OWN,
             )
         elif self == RoleEnum.SUPER_ADMIN:
-            return (
-                PermissionEnum.PRODUCT_EDIT,
-                PermissionEnum.PRODUCT_DELETE,
-                PermissionEnum.PRODUCT_APPROVE,
-                PermissionEnum.PRICE_EDIT,
-                PermissionEnum.STOCK_EDIT,
-                PermissionEnum.CATEGORY_EDIT,
-                PermissionEnum.USER_EDIT,
-                PermissionEnum.SELLER_APPROVE,
-            )
+            return (PermissionEnum.ADMIN_PANEL,)
         return ()

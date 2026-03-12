@@ -15,7 +15,7 @@ from auth.application.exceptions import (
 )
 from auth.application.services import SessionService
 from core.config.permissions import RoleEnum
-from core.infrastructure.database.db_helper import db_helper
+from core.infrastructure.database.db_helper import db_manager
 from users.infrastructure.helpers import PasswordHelper
 from users.api.dependencies import get_user_service
 from users.application.services import UserService
@@ -26,7 +26,7 @@ from auth.infrastructure.session_mapper import SessionMapper
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
-    async for session in db_helper.get_session():
+    async for session in db_manager.get_session():
         yield session
 
 

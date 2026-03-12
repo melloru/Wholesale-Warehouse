@@ -2,12 +2,9 @@ from uuid import UUID, uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.application.schemas import (
-    LoginSchema,
-    SessionCreateInternal,
-    AccessTokenResponse,
-    TokenCreate,
-)
+from auth.api.schemas import LoginRequest, AccessTokenResponse
+from auth.application.schemas.sessions import SessionCreateInternal
+from auth.application.schemas.tokens import TokenCreate
 from users.infrastructure.helpers import PasswordHelper
 from users.application.services import UserService
 from auth.application.services import SessionService, TokenService
@@ -30,7 +27,7 @@ class AuthService:
     async def login(
         self,
         session: AsyncSession,
-        login_dto: LoginSchema,
+        login_dto: LoginRequest,
     ) -> AccessTokenResponse:
         user = await self.user_service.get_by_email(
             session,

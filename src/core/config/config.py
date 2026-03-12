@@ -48,6 +48,22 @@ class SecurityConfig:
     BCRYPT_ROUNDS: int = env.int("BCRYPT_ROUNDS", 12)
 
 
+class ApiKeyConfig:
+    """
+    Заглушка для будущего разделения на микросервисы.
+    Будет хранить АПИ ключи для общения между сервисами.
+    """
+
+    API_KEY_FOR_SERVICE: dict = {
+        "users": env.str("API_KEY_FOR_SERVICE_USERS", ""),
+        "sellers": env.str("API_KEY_FOR_SERVICE_SELLERS", ""),
+    }
+    API_KEY_SERVICE: dict = {
+        "users": env.str("API_KEY_SERVICE_USERS", ""),
+        "sellers": env.str("API_KEY_SERVICE_SELLERS", ""),
+    }
+
+
 class Config:
     db: DatabaseConfig = DatabaseConfig()
     run: RunConfig = RunConfig()

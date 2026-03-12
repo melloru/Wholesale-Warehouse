@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from core.config import config
 
 
-class DatabaseHelper:
+class DatabaseConnectionManager:
     def __init__(self, url: str, echo: bool = False):
         self.engine: AsyncEngine = create_async_engine(url, echo=echo)
         self.session_factory = async_sessionmaker(
@@ -29,7 +29,7 @@ class DatabaseHelper:
         await self.engine.dispose()
 
 
-db_helper = DatabaseHelper(
+db_manager = DatabaseConnectionManager(
     url=config.db.db_url,
     echo=config.db.POSTGRES_ECHO,
 )

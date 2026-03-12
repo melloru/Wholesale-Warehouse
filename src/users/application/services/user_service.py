@@ -1,7 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from users.application.schemas import UserCreateRequest
-from users.application.exceptions import UserNotFoundError, UserAlreadyExistsError
+from core.config.permissions import RoleEnum
+from users.api.schemas.requests import (
+    UserCreatePublicRequest,
+    UserUpdatePublicRequest,
+    UserCreateAdminRequest,
+    UserUpdateAdminRequest,
+)
+
+from users.application.exceptions import UserAlreadyExistsError
+from users.infrastructure.cache.cache_user_repository import CachedUserRepository
 from users.infrastructure.helpers import PasswordHelper
 from users.infrastructure.exceptions import UserIntegrityError
 from users.infrastructure.database.repositories import UserRepository
@@ -13,38 +21,16 @@ class UserService:
         self,
         user_repository: UserRepository,
         password_helper: PasswordHelper,
+        cached_user_repository: CachedUserRepository,
     ):
         self.user_repository = user_repository
         self.password_helper = password_helper
-
-    async def get_by_id(
-        self,
-        session: AsyncSession,
-        user_id: int,
-    ) -> UserEntity | None:
-        user_entity = await self.user_repository.get_by_id(
-            session,
-            user_id=user_id,
-        )
-        if not user_entity:
-            raise UserNotFoundError(f"User with id {user_id} not found")
-
-        return user_entity
-
-    async def get_by_email(
-        self,
-        session: AsyncSession,
-        email: str,
-    ) -> UserEntity | None:
-        return await self.user_repository.get_one_or_none(
-            session,
-            email=email,
-        )
+        self.cached_user_repository = cached_user_repository
 
     async def create(
         self,
         session: AsyncSession,
-        user_data: UserCreateRequest,
+        user_data: UserCreatePublicRequest | UserCreateAdminRequest,
     ) -> UserEntity:
         password_hash = self.password_helper.hash_password(
             plain_password=user_data.password_plain
@@ -58,8 +44,56 @@ class UserService:
             first_name=user_data.first_name,
             last_name=user_data.last_name,
             public_name=user_data.public_name,
+            role_id=getattr(user_data, "role_id", RoleEnum.USER.id),
         )
         try:
             return await self.user_repository.create(session, entity=user_entity)
         except UserIntegrityError as e:
             raise UserAlreadyExistsError("User with this email already exists") from e
+
+    async def get_by_id(
+        self,
+        session: AsyncSession,
+        user_id: int,
+    ) -> UserEntity | None:
+
+        return await self.cached_user_repository.get_by_id(
+            session,
+            user_id=user_id,
+        )
+
+    async def get_by_email(
+        self,
+        session: AsyncSession,
+        email: str,
+    ) -> UserEntity | None:
+        return await self.cached_user_repository.get_by_email(
+            session,
+            email=email,
+        )
+
+    async def update(
+        self,
+        session: AsyncSession,
+        user_id: int,
+        update_data: UserUpdatePublicRequest | UserUpdateAdminRequest,
+    ) -> UserEntity:
+        user_entity = await self.cached_user_repository.get_by_id(
+            session,
+            user_id=user_id,
+        )
+        old_email = user_entity.email
+        update_dict = update_data.model_dump(
+            exclude_unset=True,
+            exclude_none=True,
+        )
+        user_entity.update(data=update_dict)
+        updated_user_entity = await self.user_repository.update(
+            session,
+            entity=user_entity,
+        )
+        await self.cached_user_repository.invalidate(
+            user_id=user_id,
+            email=old_email if "email" in update_dict else None,
+        )
+        return updated_user_entity

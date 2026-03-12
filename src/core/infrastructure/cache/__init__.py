@@ -1,7 +1,7 @@
-from .redis_helper import RedisHelper, redis_helper
+from .redis_manager import RedisConnectionManager, redis_manager
 
 
 __all__ = [
-    "RedisHelper",
-    "redis_helper",
+    "RedisConnectionManager",
+    "redis_manager",
 ]

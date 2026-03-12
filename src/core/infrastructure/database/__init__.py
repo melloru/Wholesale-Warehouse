@@ -1,7 +1,7 @@
-from .db_helper import DatabaseHelper, db_helper
+from .db_helper import DatabaseConnectionManager, db_manager
 
 
 __all__ = [
-    "DatabaseHelper",
-    "db_helper",
+    "DatabaseConnectionManager",
+    "db_manager",
 ]

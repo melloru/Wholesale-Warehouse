@@ -13,14 +13,14 @@ from auth.application.exceptions import (
     SessionRevokedError,
     SessionExpiredError,
 )
-from auth.application.schemas import AccessTokenResponse, LoginSchema
+from auth.api.schemas import AccessTokenResponse, LoginRequest
 from auth.application.services import AuthService
 from core.api.dependencies import (
     get_session,
     get_access_token,
     get_access_token_optional,
 )
-from core.infrastructure.database import db_helper
+from core.infrastructure.database import db_manager
 
 router = APIRouter(
     prefix="/auth",
@@ -32,7 +32,7 @@ router = APIRouter(
 async def login(
     session: Annotated[AsyncSession, Depends(get_session)],
     service: Annotated[AuthService, Depends(get_auth_service)],
-    login_data: LoginSchema,
+    login_data: LoginRequest,
 ):
     try:
         return await service.login(session, login_dto=login_data)
@@ -45,7 +45,7 @@ async def login(
 
 @router.post("/refresh", response_model=AccessTokenResponse | None)
 async def refresh(
-    session: Annotated[AsyncSession, Depends(db_helper.get_session)],
+    session: Annotated[AsyncSession, Depends(db_manager.get_session)],
     access_token: Annotated[str, Depends(get_access_token)],
     service: Annotated[AuthService, Depends(get_auth_service)],
 ):

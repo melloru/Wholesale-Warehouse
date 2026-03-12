@@ -3,7 +3,7 @@ import asyncio
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.infrastructure.database.db_helper import db_helper
+from core.infrastructure.database.db_helper import db_manager
 from core.config.permissions import PermissionEnum, RoleEnum
 from users.infrastructure.database.models import (
     Permission as PermissionDb,
@@ -81,7 +81,7 @@ async def _create_roles_with_permissions(
 
 
 async def main():
-    async for session in db_helper.get_session():
+    async for session in db_manager.get_session():
         permissions_map = await _create_permissions(session)
         await _create_roles_with_permissions(session, permissions_map)
 

@@ -17,3 +17,8 @@ class UserEntity:
     email_verified: bool = False
     role_id: int = RoleEnum.USER.id
     status: UserStatus = UserStatus.PENDING
+
+    def update(self, data: dict):
+        for field, value in data.items():
+            if hasattr(self, field) and value is not None:
+                setattr(self, field, value)

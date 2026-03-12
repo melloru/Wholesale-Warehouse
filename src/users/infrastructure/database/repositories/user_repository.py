@@ -2,6 +2,7 @@ from typing import Type
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import select
 
 from core.infrastructure.database.base_repository import SqlalchemyRepository
 from users.domain.entities import UserEntity
@@ -45,6 +46,18 @@ class UserRepository:
             session,
             obj_id=user_id,
         )
+
+    async def get_by_email(
+        self,
+        session: AsyncSession,
+        email: str,
+    ) -> UserEntity | None:
+        stmt = select(self.model).where(self.model.email == email)
+        result = await session.execute(stmt)
+        instance = result.scalar_one_or_none()
+        if not instance:
+            return None
+        return self.mapper.from_orm_to_entity(instance)
 
     async def get_one_or_none(
         self,
