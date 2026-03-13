@@ -31,24 +31,24 @@ class UserService:
     async def create(
         self,
         session: AsyncSession,
-        user_data: UserCreatePublicRequest | UserCreateAdminRequest,
+        create_data: UserCreatePublicRequest | UserCreateAdminRequest,
     ) -> UserEntity:
         password_hash = self.password_helper.hash_password(
-            plain_password=user_data.password_plain
+            plain_password=create_data.password_plain
         )
 
         user_entity = UserEntity(
             id=None,
-            email=user_data.email,
+            email=create_data.email,
             password_hash=password_hash,
-            phone_number=user_data.phone_number,
-            first_name=user_data.first_name,
-            last_name=user_data.last_name,
-            public_name=user_data.public_name,
-            role_id=getattr(user_data, "role_id", RoleEnum.USER.id),
-            status=getattr(user_data, "status", UserStatus.PENDING),
-            phone_verified=getattr(user_data, "phone_verified", False),
-            email_verified=getattr(user_data, "email_verified", False),
+            phone_number=create_data.phone_number,
+            first_name=create_data.first_name,
+            last_name=create_data.last_name,
+            public_name=create_data.public_name,
+            role_id=getattr(create_data, "role_id", RoleEnum.USER.id),
+            status=getattr(create_data, "status", UserStatus.PENDING),
+            phone_verified=getattr(create_data, "phone_verified", False),
+            email_verified=getattr(create_data, "email_verified", False),
         )
         try:
             return await self.user_repository.create(session, entity=user_entity)

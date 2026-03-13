@@ -8,6 +8,7 @@ class UserPublicResponse(BaseUser):
 
 
 class UserAdminResponse(UserPublicResponse):
+    id: int
     email: str
     phone_number: str | None
     phone_verified: bool

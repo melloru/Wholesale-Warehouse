@@ -91,17 +91,17 @@ async def get_user_by_email(
 async def create_user(
     session: Annotated[AsyncSession, Depends(db_manager.get_session)],
     service: Annotated[UserService, Depends(get_user_service)],
-    user_data: UserCreatePublicRequest,
+    create_data: UserCreatePublicRequest,
 ):
     try:
         user_entity = await service.create(
             session,
-            user_data=user_data,
+            create_data=create_data,
         )
         return UserCreatePublicResponse(id=user_entity.id)
     except UserAlreadyExistsError as e:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+            status_code=409,
             detail=str(e),
         )
 
